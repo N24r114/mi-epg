@@ -1,0 +1,65 @@
+name: Auto Generate EPG
+
+on:
+  schedule:
+    - cron: '0 3 * * *'  # Diariamente a las 3 AM
+  workflow_dispatch:     # Permite ejecutar manualmente
+
+jobs:
+  generate-epg:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Clone iptv-org/epg
+      run: git clone https://github.com/iptv-org/epg.git epg-grabber
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: epg-grabber/package-lock.json
+    
+    - name: Install dependencies
+      run: |
+        cd epg-grabber
+        npm install
+    
+    - name: Copy channel list
+      run: cp GIANUEVA.xml epg-grabber/
+    
+    - name: Generate EPG
+      run: |
+        cd epg-grabber
+        npm run grab -- --channels="GIANUEVA.xml" --days=4 --delay=2000 --maxConnections=2 --timeout=10000
+    
+    - name: Copy generated files
+      run: |
+        cp epg-grabber/guide.xml ./
+        cp epg-grabber/guide.xml.gz ./ 2>/dev/null || true
+    
+    - name: Update info
+      run: |
+        echo "Última actualización: $(date)" > last-update.txt
+        echo "# Mi EPG Personal" > README.md
+        echo "" >> README.md
+        echo "**EPG Link:** https://raw.githubusercontent.com/${{ github.repository }}/main/guide.xml" >> README.md
+        echo "" >> README.md
+        echo "**Última actualización:** $(date)" >> README.md
+    
+    - name: Commit and push
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "EPG Bot"
+        git add .
+        if git diff --staged --quiet; then
+          echo "No changes"
+        else
+          git commit -m "🔄 Auto-update EPG - $(date '+%Y-%m-%d %H:%M:%S')"
+          git push
+        fi
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
