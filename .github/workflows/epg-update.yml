@@ -40,7 +40,7 @@ jobs:
     - name: Generate EPG
       run: |
         cd epg-grabber
-        npm run grab -- --channels="GIANUEVA.xml" --days=4 --delay=2000 --maxConnections=2 --timeout=10000
+        npm run grab -- --channels="GIANUEVA.xml" --days=2 --delay=2000 --maxConnections=2 --timeout=10000
     
     - name: Copy generated files
       run: |
