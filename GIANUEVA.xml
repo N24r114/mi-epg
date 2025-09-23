@@ -232,13 +232,21 @@
   <channel site="gatotv.com" lang="es" xmltv_id="CineClick.us" site_id="cineclick">CineClick</channel>
   <channel site="gatotv.com" lang="es" xmltv_id="CineEstelar.us" site_id="cine_estelar">Cine Estelar</channel>
   <channel site="gatotv.com" lang="es" xmltv_id="CineLatino.mx" site_id="cinelatino">Cinelatino</channel>
+  <channel site="tv.movistar.com.pe" lang="es" xmltv_id="" site_id="lch2294">FOX SPORTS PREMIUM</channel>
+  <channel site="tv.movistar.com.pe" lang="es" xmltv_id="" site_id="lch2295">FOX SPORTS 2</channel>
+  <channel site="gatotv.com" lang="es" xmltv_id="NTN24.co" site_id="ntn24_nuestra_tele_noticias">NTN24</channel>
+  <channel site="programacion.tcc.com.uy" lang="es" xmltv_id="" site_id="306">Film &amp; Arts HD</channel>
+  <channel site="programacion.tcc.com.uy" lang="es" xmltv_id="" site_id="390">History 2 HD</channel>
+  <channel site="programacion.tcc.com.uy" lang="es" xmltv_id="" site_id="452">Universal Premiere</channel>
+  <channel site="programacion.tcc.com.uy" lang="es" xmltv_id="" site_id="453">Universal Cinema</channel>
+  <channel site="programacion.tcc.com.uy" lang="es" xmltv_id="" site_id="454">Universal Reality</channel>
+  <channel site="programacion.tcc.com.uy" lang="es" xmltv_id="" site_id="455">Universal Comedy</channel>
+  <channel site="programacion.tcc.com.uy" lang="es" xmltv_id="" site_id="456">Universal Crime</channel>
   <channel site="gatotv.com" lang="es" xmltv_id="CinemaPlatino.mx" site_id="cinema_platino">Cinema Platino</channel>
   <channel site="gatotv.com" lang="es" xmltv_id="CinemaPlus.co" site_id="cinema_mas">Cinema +</channel>
   <channel site="gatotv.com" lang="es" xmltv_id="CinemaxLatinAmerica.us" site_id="cinemax_chile">Cinemax Chile</channel>
   <channel site="gatotv.com" lang="es" xmltv_id="CinemaxLatinAmerica.us" site_id="cinemax_mexico">Cinemax México</channel>
   <channel site="gatotv.com" lang="es" xmltv_id="CinemaxLatinAmerica.us" site_id="cinemax_panregional">Cinemax Panregional</channel>
-  <channel site="gatotv.com" lang="es" xmltv_id="CineMexicano.mx" site_id="cine_mexicano">Cine Mexicano</channel>
-  <channel site="gatotv.com" lang="es" xmltv_id="CineNostalgia.us" site_id="cine_nostalgia">Cine Nostalgia</channel>
   <channel site="gatotv.com" lang="es" xmltv_id="CineSony.us" site_id="cine_sony">Cine Sony</channel>
   <channel site="gatotv.com" lang="es" xmltv_id="Clan.es" site_id="clan_tve">Clan TVE</channel>
   <channel site="gatotv.com" lang="es" xmltv_id="Classica.us" site_id="classica">Classica</channel>
@@ -249,10 +257,6 @@
   <channel site="gatotv.com" lang="es" xmltv_id="ColorVision.do" site_id="9_republica_dominicana">9 de República Dominicana</channel>
   <channel site="gatotv.com" lang="es" xmltv_id="ComediaporMovistarPlusPlus.es" site_id="movistar_comedia">M+ Comedia</channel>
   <channel site="gatotv.com" lang="es" xmltv_id="ComedyCentral.es" site_id="comedy_central_espana">Comedy Central España</channel>
-  <channel site="gatotv.com" lang="es" xmltv_id="ConcertChannel.us" site_id="concert_channel">Concert Channel</channel>
-  <channel site="gatotv.com" lang="es" xmltv_id="COSMO.es" site_id="cosmopolitan_espana">Cosmopolitan España</channel>
-  <channel site="gatotv.com" lang="es" xmltv_id="Cuatro.es" site_id="cuatro_de_espana">Cuatro de España</channel>
-  <channel site="gatotv.com" lang="es" xmltv_id="Decasa.es" site_id="decasa">Decasa</channel>
   <channel site="gatotv.com" lang="es" xmltv_id="DePeliculaClasico.mx" site_id="de_pelicula_clasico">De Película Clásico</channel>
   <channel site="gatotv.com" lang="es" xmltv_id="DePeliculaLatinAmerica.mx" site_id="de_pelicula">De Película</channel>
   <channel site="gatotv.com" lang="es" xmltv_id="DHE.us" site_id="dhe">DHE</channel>
@@ -279,11 +283,6 @@
   <channel site="gatotv.com" lang="es" xmltv_id="ExtraTV42.cr" site_id="extra_tv_42_de_costa_rica">42 de Costa Rica</channel>
   <channel site="gatotv.com" lang="es" xmltv_id="Foro.mx" site_id="foro_tv">Foro TV</channel>
   <channel site="gatotv.com" lang="es" xmltv_id="" site_id="fox_espana">Fox España</channel>
-  <channel site="gatotv.com" lang="es" xmltv_id="FoxDeportes.us" site_id="fox_deportes">Fox Deportes</channel>
-  <channel site="gatotv.com" lang="es" xmltv_id="FoxNewsChannel.us" site_id="fox_news">Fox News</channel>
-  <channel site="gatotv.com" lang="es" xmltv_id="FUTV.cr" site_id="futv">FUTV</channel>
-  <channel site="gatotv.com" lang="es" xmltv_id="FX.cl" site_id="fx_chile">FX Chile</channel>
-  <channel site="gatotv.com" lang="es" xmltv_id="FX.mx" site_id="fx_mexico">FX México</channel>
   <channel site="gatotv.com" lang="es" xmltv_id="Gamavision.ec" site_id="gamavision">Gamavisión</channel>
   <channel site="gatotv.com" lang="es" xmltv_id="Golden.mx@Panregional" site_id="golden_panregional">Golden Panregional</channel>
   <channel site="gatotv.com" lang="es" xmltv_id="GoldenPlus.mx" site_id="golden_plus">Golden Plus</channel>
