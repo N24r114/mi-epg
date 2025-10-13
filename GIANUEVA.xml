@@ -374,17 +374,20 @@
   <channel site="gatotv.com" lang="es" xmltv_id="TNTSports3.cl" site_id="tnt_sports_3_chile">TNT Sports 3 Chile</channel>
   <channel site="gatotv.com" lang="es" xmltv_id="Tooncast.us" site_id="tooncast">Tooncast</channel>
   <channel site="gatotv.com" lang="es" xmltv_id="TVChile.cl" site_id="tv_chile">TV Chile</channel>
-  <channel site="gatotv.com" lang="es" xmltv_id="TVEInternacionalAmerica.es" site_id="tve">TVE Internacional</channel>
-  <channel site="gatotv.com" lang="es" xmltv_id="TVGloboInternacionalAmericas.br" site_id="tv_globo_internacional">TV Globo Internacional</channel>
-  <channel site="gatotv.com" lang="es" xmltv_id="TVMax.pa" site_id="tvmax">9 de Panamá</channel>
-  <channel site="gatotv.com" lang="es" xmltv_id="TVN.cl" site_id="tvn_chile">TVN Chile</channel>
-  <channel site="gatotv.com" lang="es" xmltv_id="ViaX.cl" site_id="via_x">Vía X</channel>
-  <channel site="gatotv.com" lang="es" xmltv_id="VibraTV.mx" site_id="vibra_tv">Vibra TV</channel>
-  <channel site="gatotv.com" lang="es" xmltv_id="VideoRola.mx" site_id="video_rola">Video Rola</channel>
-  <channel site="gatotv.com" lang="es" xmltv_id="ViendoMovies.us" site_id="viendomovies">ViendoMovies</channel>
-  <channel site="gatotv.com" lang="es" xmltv_id="VivaNicaraguaCanal13.ni" site_id="13_de_nicaragua">13 de Nicaragua</channel>
-  <channel site="gatotv.com" lang="es" xmltv_id="VTV.hn" site_id="vtv_honduras_vica_tv">VTV Honduras</channel>
-  <channel site="gatotv.com" lang="es" xmltv_id="WAPADT1.pr" site_id="wapa_tv">WAPA-TV</channel>
+  <channel site="cableplus.com.uy" lang="es" xmltv_id="" site_id="8363">ADULT SWIM LATAM</channel>
+  <channel site="cableplus.com.uy" lang="es" xmltv_id="" site_id="2127">HBO 2</channel>
+  <channel site="programacion.tcc.com.uy" lang="es" xmltv_id="" site_id="197">HBO 2 HD</channel>
+  <channel site="programacion.tcc.com.uy" lang="es" xmltv_id="" site_id="397">Studio Universal HD</channel>
+  <channel site="cableplus.com.uy" lang="es" xmltv_id="" site_id="2827">TELEMUNDO</channel>
+  <channel site="programacion.tcc.com.uy" lang="es" xmltv_id="" site_id="281">TNT HD</channel>
+  <channel site="cableplus.com.uy" lang="es" xmltv_id="" site_id="4054">TNT HD</channel>
+  <channel site="programacion.tcc.com.uy" lang="es" xmltv_id="" site_id="305">Warner HD</channel>
+  <channel site="cableplus.com.uy" lang="es" xmltv_id="" site_id="46">WARNER</channel>
+  <channel site="directv.com" lang="es" xmltv_id="Telemundo.us@East" site_id="406#405">Telemundo East</channel>
+  <channel site="directv.com" lang="es" xmltv_id="Telemundo.us@West" site_id="407#2545">Telemundo West</channel>
+  <channel site="directv.com" lang="en" xmltv_id="" site_id="2082#4525">KBS America</channel>
+  <channel site="directv.com" lang="en" xmltv_id="" site_id="2082#552">KBS America HD</channel>
+  <channel site="directv.com" lang="en" xmltv_id="SonyMovies.us" site_id="568#2184">Sony Movies</channel>
   <channel site="gatotv.com" lang="es" xmltv_id="WAPADT2.pr" site_id="wapa_2_deportes">WAPA 2 Deportes</channel>
   <channel site="gatotv.com" lang="es" xmltv_id="WarnerChannel.us@Panregional" site_id="warner_tv_panregional">Warner TV Panregional</channel>
   <channel site="gatotv.com" lang="es" xmltv_id="WillaxTV.pe" site_id="willax_tv">Willax TV</channel>
