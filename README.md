@@ -2,4 +2,4 @@
 
 **EPG Link:** https://raw.githubusercontent.com/N24r114/mi-epg/main/guide.xml
 
-**Última actualización:** Sun Oct 19 04:00:29 UTC 2025
+**Última actualización:** Mon Oct 20 04:03:57 UTC 2025
