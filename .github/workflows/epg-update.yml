@@ -2,20 +2,20 @@ name: Auto Generate EPG (iptv-org)
 
 on:
   schedule:
-    - cron: '0 3 * * *'  # Diariamente a las 3 AM UTC (ajusta si quieres)
-  workflow_dispatch:  # Permite ejecución manual
+    - cron: '0 3 * * *'  # Diariamente a las 3 AM UTC
+  workflow_dispatch:  # Manual
 
 jobs:
   generate-epg:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # Para push
+      contents: write
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
       with:
-        token: ${{ secrets.MY_GITHUB_TOKEN }}  # Tu token para push
+        token: ${{ secrets.MY_GITHUB_TOKEN }}
         fetch-depth: 0
 
     - name: Clone iptv-org/epg (como en README)
@@ -25,7 +25,7 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '20'  # Versión recomendada
+        node-version: '20'
         cache: 'npm'
         cache-dependency-path: epg-grabber/package-lock.json
 
@@ -44,30 +44,29 @@ jobs:
           exit 1
         fi
 
-    - name: Generate EPG (npm run grab como en README)
+    - name: Generate EPG (npm run grab corregido)
       run: |
         cd epg-grabber
-        npm run grab -- \
-          --channels="GIANUEVA.xml" \  # Tu lista personalizada
-          --days=2 \  # 2 días (ajusta si quieres más)
-          --delay=3000 \  # Delay para evitar bloqueos
-          --maxConnections=1 \  # 1 conexión para estabilidad
-          --timeout=20000 \  # Timeout 20s
-          --gzip \  # Genera .gz como en opciones
-          --output=guide.xml
+        # Comando corregido: sin comillas, ruta relativa
+        npm run grab -- --channels=./GIANUEVA.xml --days=2 --delay=3000 --maxConnections=1 --timeout=20000 --gzip --output=guide.xml
         echo "EPG generado: $(wc -c < guide.xml) bytes"
 
-    - name: Fallback si guide.xml está vacío
+    - name: Fallback si guide.xml está vacío o sin programas
       run: |
-        if [ ! -s guide.xml ]; then
-          echo "Fallback: EPG vacío"
+        if [ ! -s guide.xml ] || [ $(grep -c '<programme' guide.xml) -eq 0 ]; then
+          echo "Fallback: Descargando EPG peruano alternativo"
+          curl -f -L -o guide.xml "https://epg.pw/xmltv/peru.xml" || \
           echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?><tv generator-info-name=\"mi-epg\"></tv>" > guide.xml
+          gzip -9 guide.xml 2>/dev/null || true
+        else
+          gzip -9 guide.xml 2>/dev/null || true
         fi
+        echo "Final: $(wc -c < guide.xml) bytes, programas: $(grep -c '<programme' guide.xml)"
 
     - name: Copy generated files
       run: |
         cp epg-grabber/guide.xml ./
-        cp epg-grabber/guide.xml.gz ./ 2>/dev/null || true
+        [ -f epg-grabber/guide.xml.gz ] && cp epg-grabber/guide.xml.gz ./ || true
 
     - name: Update README y last-update
       run: |
@@ -78,7 +77,8 @@ jobs:
         **EPG peruano de Movistar TV - Generado con iptv-org/epg**
 
         **Última actualización:** $(date '+%Y-%m-%d %H:%M:%S')  
-        **Canales:** $(grep -c '<channel' GIANUEVA.xml) (de tu GIANUEVA.xml)
+        **Canales:** $(grep -c '<channel' GIANUEVA.xml)  
+        **Programas:** $(grep -c '<programme' guide.xml)
 
         ### Enlaces
         - **XML:** https://raw.githubusercontent.com/${{ github.repository }}/main/guide.xml
