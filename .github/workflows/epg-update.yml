@@ -1,120 +1,99 @@
-name: Auto Generate EPG
+name: Auto Generate EPG (iptv-org)
 
 on:
   schedule:
-    - cron: '0 3 * * *'  # Diariamente a las 3 AM (tu horario original)
-  workflow_dispatch:     # Permite ejecutar manualmente
+    - cron: '0 3 * * *'  # Diariamente a las 3 AM UTC (ajusta si quieres)
+  workflow_dispatch:  # Permite ejecución manual
 
 jobs:
   generate-epg:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: write  # Para push
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
       with:
-        token: ${{ secrets.MY_GITHUB_TOKEN }}
+        token: ${{ secrets.MY_GITHUB_TOKEN }}  # Tu token para push
         fetch-depth: 0
 
-    - name: Clone iptv-org/epg
-      run: git clone --depth 1 https://github.com/iptv-org/epg.git epg-grabber
+    - name: Clone iptv-org/epg (como en README)
+      run: |
+        git clone --depth 1 -b master https://github.com/iptv-org/epg.git epg-grabber
 
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '20'
+        node-version: '20'  # Versión recomendada
         cache: 'npm'
         cache-dependency-path: epg-grabber/package-lock.json
 
-    - name: Install dependencies
+    - name: Install dependencies (npm install como en README)
       run: |
         cd epg-grabber
-        npm ci
+        npm install
 
-    - name: Copy GIANUEVA.xml
+    - name: Copy custom channel list (GIANUEVA.xml)
       run: |
         if [ -f GIANUEVA.xml ]; then
           cp GIANUEVA.xml epg-grabber/
-          echo "GIANUEVA.xml copiado (canales: $(grep '<channel' GIANUEVA.xml | wc -l))"
+          echo "Canales cargados: $(grep -c '<channel' GIANUEVA.xml)"
         else
-          echo "ERROR: GIANUEVA.xml no encontrado en el repositorio"
+          echo "ERROR: GIANUEVA.xml no encontrado"
           exit 1
         fi
 
-    - name: Generate EPG
+    - name: Generate EPG (npm run grab como en README)
       run: |
         cd epg-grabber
-        echo "Iniciando grabber con --days=2, --delay=3000, --maxConnections=1..."
         npm run grab -- \
-          --channels="GIANUEVA.xml" \
-          --days=2 \
-          --delay=3000 \
-          --maxConnections=1 \
-          --timeout=20000 \
-          --output=guide.xml \
-          || echo "Grabber terminó con errores (continuamos con fallback)"
+          --channels="GIANUEVA.xml" \  # Tu lista personalizada
+          --days=2 \  # 2 días (ajusta si quieres más)
+          --delay=3000 \  # Delay para evitar bloqueos
+          --maxConnections=1 \  # 1 conexión para estabilidad
+          --timeout=20000 \  # Timeout 20s
+          --gzip \  # Genera .gz como en opciones
+          --output=guide.xml
+        echo "EPG generado: $(wc -c < guide.xml) bytes"
 
-    - name: Debug - Verificar guide.xml
+    - name: Fallback si guide.xml está vacío
       run: |
-        echo "=== CONTENIDO DE epg-grabber/ ==="
-        ls -la epg-grabber/ | head -15
-        if [ -f epg-grabber/guide.xml ]; then
-          echo "guide.xml existe → $(wc -c < epg-grabber/guide.xml) bytes"
-        else
-          echo "guide.xml NO se generó"
+        if [ ! -s guide.xml ]; then
+          echo "Fallback: EPG vacío"
+          echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?><tv generator-info-name=\"mi-epg\"></tv>" > guide.xml
         fi
 
     - name: Copy generated files
       run: |
-        # Si existe y tiene contenido
-        if [ -f epg-grabber/guide.xml ] && [ -s epg-grabber/guide.xml ]; then
-          cp epg-grabber/guide.xml ./
-          echo "guide.xml copiado correctamente"
-        else
-          echo "ADVERTENCIA: guide.xml vacío o no generado → usando fallback"
-          echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?><tv generator-info-name=\"mi-epg\"></tv>" > guide.xml
-        fi
+        cp epg-grabber/guide.xml ./
+        cp epg-grabber/guide.xml.gz ./ 2>/dev/null || true
 
-        # Copiar .gz solo si existe
-        if [ -f epg-grabber/guide.xml.gz ]; then
-          cp epg-grabber/guide.xml.gz ./
-          echo "guide.xml.gz copiado"
-        else
-          echo "No hay guide.xml.gz"
-        fi
-
-    - name: Update info
+    - name: Update README y last-update
       run: |
         echo "Última actualización: $(date '+%Y-%m-%d %H:%M:%S')" > last-update.txt
-        
-        cat > README.md << 'EOF'
+        cat > README.md << EOF
         # Mi EPG Personal
 
-        **EPG generado automáticamente con tus canales favoritos.**
+        **EPG peruano de Movistar TV - Generado con iptv-org/epg**
 
-        ---
+        **Última actualización:** $(date '+%Y-%m-%d %H:%M:%S')  
+        **Canales:** $(grep -c '<channel' GIANUEVA.xml) (de tu GIANUEVA.xml)
+
         ### Enlaces
         - **XML:** https://raw.githubusercontent.com/${{ github.repository }}/main/guide.xml
         - **GZIP:** https://raw.githubusercontent.com/${{ github.repository }}/main/guide.xml.gz
-        - **Última actualización:** $(date '+%Y-%m-%d %H:%M:%S')
 
-        ---
-        > Generado con [iptv-org/epg](https://github.com/iptv-org/epg)  
-        > Canales: $(grep '<channel' GIANUEVA.xml | wc -l)
+        **Generado automáticamente cada día.**
         EOF
-
-    - name: Configure git
-      run: |
-        git config --global user.name "github-actions[bot]"
-        git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
     - name: Commit and push
       run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
         git add .
         if git diff --staged --quiet; then
-          echo "No hay cambios para commitear"
+          echo "No hay cambios para commit"
         else
           git commit -m "Auto-update EPG - $(date '+%Y-%m-%d %H:%M:%S')"
           git push origin main
