@@ -1,124 +1,74 @@
-name: Auto Generate EPG (Movistar Perú)
+name: Auto Generate EPG
 
 on:
   schedule:
-    - cron: '0 3 * * *'  # Todos los días a las 3 AM UTC
-  workflow_dispatch:    # Permite ejecución manual
+    - cron: '0 3 * * *'  # Diariamente a las 3 AM
+  workflow_dispatch:     # Permite ejecutar manualmente
 
 jobs:
   generate-epg:
     runs-on: ubuntu-latest
+    
     permissions:
-      contents: write  # Necesario para git push
-
+      contents: write  # Necesario para push
+    
     steps:
-      # 1. Checkout del repo (con token para push)
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.MY_GITHUB_TOKEN }}
-          fetch-depth: 0
-
-      # 2. Clonar iptv-org/epg (como en README)
-      - name: Clone iptv-org/epg
-        run: |
-          git clone --depth 1 -b master https://github.com/iptv-org/epg.git epg-grabber
-
-      # 3. Instalar Node.js
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: epg-grabber/package-lock.json
-
-      # 4. Instalar dependencias
-      - name: Install dependencies
-        run: |
-          cd epg-grabber
-          npm ci  # Más rápido y seguro que npm install
-
-      # 5. Copiar tu lista de canales
-      - name: Copy GIANUEVA.xml
-        run: |
-          if [ ! -f GIANUEVA.xml ]; then
-            echo "ERROR: GIANUEVA.xml no encontrado en el repo"
-            exit 1
-          fi
-          cp GIANUEVA.xml epg-grabber/
-          echo "Canales: $(grep -c '<channel' GIANUEVA.xml) encontrados"
-
-      # 6. Generar EPG (dentro de epg-grabber)
-      - name: Generate EPG
-        run: |
-          cd epg-grabber
-          echo "Ejecutando: npm run grab -- --channels=./GIANUEVA.xml --days=2 --gzip"
-          npm run grab -- \
-            --channels=./GIANUEVA.xml \
-            --days=2 \
-            --delay=3000 \
-            --maxConnections=1 \
-            --timeout=20000 \
-            --gzip \
-            --output=guide.xml
-
-          if [ -f guide.xml ]; then
-            echo "guide.xml generado: $(wc -c < guide.xml) bytes"
-            echo "Programas: $(grep -c '<programme' guide.xml || echo 0)"
-          else
-            echo "ERROR: guide.xml NO se generó"
-          fi
-
-      # 7. Fallback si el EPG está vacío
-      - name: Fallback EPG peruano
-        run: |
-          if [ ! -f epg-grabber/guide.xml ] || [ ! -s epg-grabber/guide.xml ] || [ $(grep -c '<programme' epg-grabber/guide.xml) -eq 0 ]; then
-            echo "EPG vacío o sin programas → usando fallback peruano"
-            curl -f -L -o epg-grabber/guide.xml "https://epg.pw/xmltv/peru.xml" || \
-              echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?><tv generator-info-name=\"Fallback EPG\"></tv>" > epg-grabber/guide.xml
-            gzip -9 epg-grabber/guide.xml
-          fi
-
-      # 8. Copiar archivos al root del repo
-      - name: Copy files to root
-        run: |
-          if [ -f epg-grabber/guide.xml ]; then
-            cp epg-grabber/guide.xml ./
-            echo "guide.xml copiado al root"
-          else
-            echo "ERROR: guide.xml no existe"
-            exit 1
-          fi
-          [ -f epg-grabber/guide.xml.gz ] && cp epg-grabber/guide.xml.gz ./ || echo "No hay guide.xml.gz"
-
-      # 9. Actualizar README
-      - name: Update README
-        run: |
-          cat > README.md << 'EOF'
-          # Mi EPG Personal (Movistar Perú)
-
-          **Generado automáticamente con [iptv-org/epg](https://github.com/iptv-org/epg)**
-
-          **Última actualización:** $(date '+%Y-%m-%d %H:%M:%S')  
-          **Canales:** $(grep -c '<channel' GIANUEVA.xml)  
-          **Programas:** $(grep -c '<programme' guide.xml || echo 0)
-
-          ### Enlaces
-          - **XML:** https://raw.githubusercontent.com/${{ github.repository }}/main/guide.xml
-          - **GZIP:** https://raw.githubusercontent.com/${{ github.repository }}/main/guide.xml.gz
-
-          **Se actualiza todos los días a las 3 AM UTC.**
-          EOF
-
-      # 10. Commit y push
-      - name: Commit and push
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add .
-          if git diff --staged --quiet; then
-            echo "No hay cambios"
-          else
-            git commit -m "EPG Auto-update $(date '+%Y-%m-%d %H:%M')"
-            git push origin main
-          fi
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        fetch-depth: 0
+    
+    - name: Clone iptv-org/epg
+      run: git clone https://github.com/iptv-org/epg.git epg-grabber
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: epg-grabber/package-lock.json
+    
+    - name: Install dependencies
+      run: |
+        cd epg-grabber
+        npm install
+    
+    - name: Copy channel list
+      run: cp GIANUEVA.xml epg-grabber/
+    
+    - name: Generate EPG
+      run: |
+        cd epg-grabber
+        npm run grab -- --channels="GIANUEVA.xml" --days=4 --delay=2000 --maxConnections=2 --timeout=10000
+    
+    - name: Copy generated files
+      run: |
+        cp epg-grabber/guide.xml ./
+        cp epg-grabber/guide.xml.gz ./ 2>/dev/null || true
+    
+    - name: Update info
+      run: |
+        echo "Última actualización: $(date)" > last-update.txt
+        echo "# Mi EPG Personal" > README.md
+        echo "" >> README.md
+        echo "**EPG Link:** https://raw.githubusercontent.com/${{ github.repository }}/main/guide.xml" >> README.md
+        echo "" >> README.md
+        echo "**Última actualización:** $(date)" >> README.md
+    
+    - name: Configure git
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+    
+    - name: Commit and push
+      run: |
+        git add .
+        if git diff --staged --quiet; then
+          echo "No changes to commit"
+        else
+          git commit -m "🔄 Auto-update EPG - $(date '+%Y-%m-%d %H:%M:%S')"
+          git push origin main
+        fi
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
