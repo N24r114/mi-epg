@@ -1,13 +1,5 @@
 # Mi EPG Personal
 
-**EPG generado automáticamente con tus canales favoritos.**
+**EPG Link:** https://raw.githubusercontent.com/N24r114/mi-epg/main/guide.xml
 
----
-### Enlaces
-- **XML:** https://raw.githubusercontent.com/N24r114/mi-epg/main/guide.xml
-- **GZIP:** https://raw.githubusercontent.com/N24r114/mi-epg/main/guide.xml.gz
-- **Última actualización:** $(date '+%Y-%m-%d %H:%M:%S')
-
----
-> Generado con [iptv-org/epg](https://github.com/iptv-org/epg)  
-> Canales: $(grep '<channel' GIANUEVA.xml | wc -l)
+**Última actualización:** Sat Nov  1 03:42:12 UTC 2025
